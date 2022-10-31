@@ -16,6 +16,9 @@ Requirements -
 3.  Visualization needs to be there.
 """
 import math
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 class AHC:
     def euclidean_dist(self, node1, node2):
@@ -89,17 +92,23 @@ class AHC:
 
             # print(self.clusters)
 
+
+    #-------------------
+
 def data_input(file_name):
     data = []
     with open(file_name) as f:
         linecount = 0
         for row in f.readlines():
-            if linecount == 0:
-                linecount+=1
-                continue
+            if linecount == 0: 
+                linecount+=1 
+                continue 
             data.append([float(item) for item in row.split(',')])
             linecount+=1
     return data
+
+    
+    #-------------------
 
 def main():
     # Read Input
@@ -115,9 +124,26 @@ def main():
         # Find the closest clusters.
         # Merge the clusters
     clustering_algo.run_algorithm()
-    print(clustering_algo.clusters)
+    print(clustering_algo.clusters) #save it in the variable
 
-    # Run the Visualization 
+    #-------------------
+
+    # Dendrogram Visualization
+    linkage_data = linkage(data, method='ward', metric='euclidean')
+    dendrogram(linkage_data)
+    # Plotting a horizontal line based on the first biggest distance between clusters 
+    plt.axhline(y = 0.9, color='red', linestyle='--'); 
+    # Plotting a horizontal line based on the second biggest distance between clusters 
+    plt.axhline(y = 0.8, color='crimson');
+    plt.title("Agglomerative Hierarchical Clustering Dendrogram")
+    plt.show()
+
+    # Scatter Plot Visualization
+    # plt.figure(figsize=(0,15))
+    # plt.scatter(data[0], data[1], c = clustering_algo.clusters)
+    # ----------
+    # plt.figure(figsize=(20,10))
+    # sns.scatterplot(X[:,0], X[:, 1], hue=cluster)
+    # sns.scatterplot(c_points[:,0], c_points[:, 1], s=200, color='blue')
 
 main()
-
